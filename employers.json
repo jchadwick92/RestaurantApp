@@ -2,19 +2,21 @@
     {
         "name": "Shahrukh Khan",
         "address": "Peterborough",
-        "businessType": "Pub",
-        "postedJobs": []
+        "businessType": "Pub"
     },
     {
         "name": "Moshe Shamash",
         "address": "Israel",
-        "businessType": "Falafel shop",
-        "postedJobs": []
+        "businessType": "Falafel shop"
     },
     {
         "name": "A",
         "address": "a",
-        "businessType": "a",
-        "postedJobs": []
+        "businessType": "a"
+    },
+    {
+        "name": "John Doe",
+        "address": "London",
+        "businessType": "Cafe"
     }
 ]

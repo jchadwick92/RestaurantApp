@@ -3,6 +3,7 @@ var Employer = require("./Employer.js")
 var Job = require("./Job.js")
 var EmployeeCollection = require("./EmployeeCollection.js")
 var EmployerCollection = require("./EmployerCollection.js")
+var JobCollection = require("./JobCollection.js")
 const bodyParser = require('body-parser');
 const repl = require("repl")
 const express = require('express')
@@ -12,8 +13,10 @@ app.use(bodyParser.json());
 
 var employerCollection = new EmployerCollection()
 var employeeCollection = new EmployeeCollection()
+var jobCollection = new JobCollection()
 employerCollection.readEmployersJson("employers.json")
 employeeCollection.readEmployeesJson("employees.json")
+jobCollection.readJobsJson("jobs.json")
 
 // gets all employers
 app.get('/employers', (req, res) => {
@@ -30,7 +33,7 @@ app.get('/employees', (req, res) => {
 // gets all jobs
 app.get('/jobs', (req, res) => {
     res.statusCode = 200
-    res.send(employerCollection.getAllJobs())
+    res.send(jobCollection.jobs)
 })
 
 // creates new employer
@@ -72,23 +75,30 @@ app.post('/employees', (req, res) => {
 // gets all jobs posted by specific employer
 app.get('/employers/:slug/jobs', (req, res) => {
     res.statusCode = 200
-    res.send(employerCollection.findByUrlSlug(req.params.slug).postedJobs)
+    var employer = employerCollection.findByUrlSlug(req.params.slug)
+    var employerJobs = employer.getPostedJobs(jobCollection)
+    res.send(employerJobs)
 })
 
 // creates new job asscociated to specific employer
 app.post('/employers/:slug/jobs', (req, res) => {
     var employer = employerCollection.findByUrlSlug(req.params.slug.toLowerCase())
     var employerUrlSlug = employer.urlSlug()
-    console.log(employer)
     var description = req.query.description
     var jobType = req.query.jobType
     var salary = req.query.salary
 
-    var newJob = new Job(employerUrlSlug, description, jobType, salary)
-    console.log(newJob)
-    employer.addJob(newJob)
-    res.statusCode = 200
-    res.send(newJob)
+    if (description == undefined || jobType == undefined || salary == undefined) {
+        res.statusCode = 400
+        res.send("Bad request")
+    } else {
+        var newJob = new Job(employerUrlSlug, description, jobType, salary)
+
+        jobCollection.addJob(newJob)
+        jobCollection.sendToJson("jobs.json")
+        res.statusCode = 200
+        res.send(newJob)
+    }
 })
 
 app.listen(8000, () => {
@@ -98,9 +108,11 @@ app.listen(8000, () => {
 const replServer = repl.start("> ")
 replServer.context.EmployerCollection = EmployerCollection
 replServer.context.EmployeeCollection = EmployeeCollection
+replServer.context.JobCollection = JobCollection
 replServer.context.Job = Job
 replServer.context.Employer = Employer
 replServer.context.Employee = Employee
 
 replServer.context.employerCollection = employerCollection
 replServer.context.employeeCollection = employeeCollection
+replServer.context.jobCollection = jobCollection

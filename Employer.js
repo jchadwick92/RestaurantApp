@@ -5,16 +5,10 @@ class Employer {
         this.name = name
         this.address = address
         this.businessType = businessType
-        this.postedJobs = []
     }
 
     postJob(description, jobType, salary) {
         var newJob = new Job(this, description, jobType, salary)
-        this.postedJobs.push(newJob)
-    }
-
-    addJob(job) {
-        this.postedJobs.push(job)
     }
 
     acceptApplicant(job, applicant) {
@@ -23,6 +17,16 @@ class Employer {
         applicant.previousJobs.push(job) // add the job to the successful applicant's previous jobs
         var jobIndex = this.postedJobs.indexOf(job)
         this.postedJobs.pop(jobIndex, 1) // remove job from posted jobs
+    }
+
+    getPostedJobs(jobCollection) {
+        var postedJobs = []
+        for (var job of jobCollection.jobs) {
+            if (job.employer == this.urlSlug()) {
+                postedJobs.push(job)
+            }
+        }
+        return postedJobs
     }
 
     urlSlug() {
