@@ -18,5 +18,10 @@
         "name": "John Doe",
         "address": "London",
         "businessType": "Cafe"
+    },
+    {
+        "name": "Joe",
+        "address": "London",
+        "businessType": "Restaurant"
     }
 ]

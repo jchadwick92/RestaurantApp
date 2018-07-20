@@ -27,7 +27,6 @@ class JobCollection {
         var data = JSON.parse(fileContents);
         if (data.length > 0) {
             for (var job of data) {
-                console.log(job.employer)
                 this.createJob(job.employer, job.description, job.jobType, job.salary)
             }
         }
